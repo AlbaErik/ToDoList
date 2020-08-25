@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,12 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.nahuelmaikafanessi.notes_app.Activities.AddNoteActivity;
+import com.nahuelmaikafanessi.notes_app.Activities.ConfigActivity;
+import com.nahuelmaikafanessi.notes_app.Activities.InfoActivity;
+import com.nahuelmaikafanessi.notes_app.Activities.ModifyNoteActivity;
+import com.nahuelmaikafanessi.notes_app.DB_Managment.DBManager;
+import com.nahuelmaikafanessi.notes_app.DB_Managment.DatabaseHelper;
 
 public class NotesListActivity extends AppCompatActivity {
 
@@ -56,7 +60,7 @@ public class NotesListActivity extends AppCompatActivity {
                 String title = titleTextView.getText().toString();
                 String desc = descTextView.getText().toString();
 
-                Intent modify_intent = new Intent(getApplicationContext(),ModifyCountryActivity.class);
+                Intent modify_intent = new Intent(getApplicationContext(), ModifyNoteActivity.class);
 
                 modify_intent.putExtra("title",title);
                 modify_intent.putExtra("desc",desc);
@@ -77,8 +81,16 @@ public class NotesListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.add_note){
-            Intent add_mem = new Intent(this, AddCountryActivity.class);
-            startActivity(add_mem);
+            Intent add_n= new Intent(this, AddNoteActivity.class);
+            startActivity(add_n);
+        }
+        if(id == R.id.configuracion){
+            Intent config= new Intent(this, ConfigActivity.class);
+            startActivity(config);
+        }
+        if(id == R.id.informacion){
+            Intent info= new Intent(this, InfoActivity.class);
+            startActivity(info);
         }
 
         return super.onOptionsItemSelected(item);

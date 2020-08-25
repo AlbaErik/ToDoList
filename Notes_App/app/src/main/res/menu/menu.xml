@@ -9,6 +9,13 @@
         android:id="@+id/add_note"
         android:icon="@android:drawable/ic_menu_add"
         android:orderInCategory="100"
-        android:title="Add Note"
+        android:title="Agregar Nota"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/configuracion"
+        android:title="Configuracion" />
+    <item
+        android:id="@+id/informacion"
+        android:title="Informacion"/>
 </menu>
