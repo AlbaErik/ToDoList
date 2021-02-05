@@ -2,17 +2,22 @@ package com.nahuelmaikafanessi.notes_app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nahuelmaikafanessi.notes_app.Activities.AddNoteActivity;
 import com.nahuelmaikafanessi.notes_app.Activities.ConfigActivity;
@@ -21,11 +26,15 @@ import com.nahuelmaikafanessi.notes_app.Activities.ModifyNoteActivity;
 import com.nahuelmaikafanessi.notes_app.DB_Managment.DBManager;
 import com.nahuelmaikafanessi.notes_app.DB_Managment.DatabaseHelper;
 
+import java.util.ArrayList;
+
 public class NotesListActivity extends AppCompatActivity {
 
     private DBManager dbManager;
     private ListView listView;
     private SimpleCursorAdapter adapter;
+    //private ArrayAdapter<String> adapter;
+    //private ArrayList<String> stringArrayList = new ArrayList<>();
 
     final String[] from = new String[] {DatabaseHelper._ID, DatabaseHelper.SUBJECT, DatabaseHelper.DESC};
 
@@ -43,8 +52,12 @@ public class NotesListActivity extends AppCompatActivity {
         listView = findViewById(R.id.list_view);
         listView.setEmptyView(findViewById(R.id.empty));
 
+
         adapter = new SimpleCursorAdapter(this,R.layout.activity_view, cursor,from,to,0);
         adapter.notifyDataSetChanged();
+
+
+        //adapter = new ArrayAdapter<>(NotesListActivity.this, android.R.layout.simple_list_item_1, stringArrayList); // no funciona con string array list
 
         listView.setAdapter(adapter);
 
@@ -67,13 +80,33 @@ public class NotesListActivity extends AppCompatActivity {
                 modify_intent.putExtra("id",id);
 
                 startActivity(modify_intent);
+                
             }
         });
         }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.menu,menu);// inflate(R.menu.menu_search, menu);
+
+        //Inicializo menu item
+        MenuItem menuItem = menu.findItem(R.id.app_bar_search);
+
+        //Inicializo search view
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
         return true;
     }
 
