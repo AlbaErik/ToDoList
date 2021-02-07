@@ -11,10 +11,6 @@
         android:orderInCategory="100"
         android:title="Agregar Nota"
         app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/configuracion"
-        android:title="Configuracion" />
     <item
         android:id="@+id/informacion"
         android:title="Informacion"/>

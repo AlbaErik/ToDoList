@@ -54,6 +54,12 @@
         </Button>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/share_btn"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Compartir" />
 
 
 </LinearLayout>

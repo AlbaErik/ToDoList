@@ -14,6 +14,7 @@ import com.nahuelmaikafanessi.notes_app.R;
 public class ModifyNoteActivity extends Activity implements View.OnClickListener {
 
     private Button update_btn;
+    private Button share_btn;
     private Button delete_btn;
     private EditText subjectText;
     private EditText descText;
@@ -30,6 +31,7 @@ public class ModifyNoteActivity extends Activity implements View.OnClickListener
         subjectText = findViewById(R.id.subject_edit_text);
         descText = findViewById(R.id.description_edit_text);
         update_btn = findViewById(R.id.update_btn);
+        share_btn = findViewById(R.id.share_btn);
         delete_btn = findViewById(R.id.delete_btn);
 
         dbManager = new DBManager(this);
@@ -40,6 +42,7 @@ public class ModifyNoteActivity extends Activity implements View.OnClickListener
         String name = intent.getStringExtra("title");
         String desc = intent.getStringExtra("desc");
 
+
         _id = Long.parseLong(id);
 
         subjectText.setText(name);
@@ -48,6 +51,7 @@ public class ModifyNoteActivity extends Activity implements View.OnClickListener
 
         update_btn.setOnClickListener(this);
         delete_btn.setOnClickListener(this);
+        share_btn.setOnClickListener(this);
     }
 
     @Override
@@ -65,6 +69,13 @@ public class ModifyNoteActivity extends Activity implements View.OnClickListener
                 dbManager.delete(_id);
                 this.returnHome();
                 break;
+
+            case R.id.share_btn:
+                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                 shareIntent.putExtra(Intent.EXTRA_TEXT,descText.getText().toString());
+                 shareIntent.setType("text/plain");
+                 startActivity(Intent.createChooser(shareIntent,"Compartir por"));
+
         }
     }
 

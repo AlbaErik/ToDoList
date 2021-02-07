@@ -1,8 +1,5 @@
 package com.nahuelmaikafanessi.notes_app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,8 +11,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.nahuelmaikafanessi.notes_app.Activities.AddNoteActivity;
-import com.nahuelmaikafanessi.notes_app.Activities.ConfigActivity;
 import com.nahuelmaikafanessi.notes_app.Activities.InfoActivity;
 import com.nahuelmaikafanessi.notes_app.Activities.ModifyNoteActivity;
 import com.nahuelmaikafanessi.notes_app.DB_Managment.DBManager;
@@ -83,10 +82,6 @@ public class NotesListActivity extends AppCompatActivity {
         if(id == R.id.add_note){
             Intent add_n= new Intent(this, AddNoteActivity.class);
             startActivity(add_n);
-        }
-        if(id == R.id.configuracion){
-            Intent config= new Intent(this, ConfigActivity.class);
-            startActivity(config);
         }
         if(id == R.id.informacion){
             Intent info= new Intent(this, InfoActivity.class);
