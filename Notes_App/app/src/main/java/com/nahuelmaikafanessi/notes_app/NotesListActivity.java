@@ -7,12 +7,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 
 import com.nahuelmaikafanessi.notes_app.Activities.AddNoteActivity;
 import com.nahuelmaikafanessi.notes_app.Activities.InfoActivity;
@@ -20,12 +24,18 @@ import com.nahuelmaikafanessi.notes_app.Activities.ModifyNoteActivity;
 import com.nahuelmaikafanessi.notes_app.DB_Managment.DBManager;
 import com.nahuelmaikafanessi.notes_app.DB_Managment.DatabaseHelper;
 
+import java.util.ArrayList;
+
 public class NotesListActivity extends AppCompatActivity {
 
     private DBManager dbManager;
     private ListView listView;
     private SimpleCursorAdapter adapter;
 
+    private ArrayList<String> listItem;
+    private ArrayAdapter<String> adapter2;
+    
+    
     final String[] from = new String[] {DatabaseHelper._ID, DatabaseHelper.SUBJECT, DatabaseHelper.DESC};
 
     final int[] to  = new int[] {R.id.id, R.id.title, R.id.desc};
@@ -41,6 +51,11 @@ public class NotesListActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.list_view);
         listView.setEmptyView(findViewById(R.id.empty));
+        
+        
+        listItem = new ArrayList<String>();
+        viewData();
+        
 
         adapter = new SimpleCursorAdapter(this,R.layout.activity_view, cursor,from,to,0);
         adapter.notifyDataSetChanged();
@@ -70,9 +85,48 @@ public class NotesListActivity extends AppCompatActivity {
         });
         }
 
+    private void viewData() {
+        Cursor cursor = dbManager.fetch();
+        if(cursor.getCount() == 0){
+            Toast.makeText(this,"No data to show", Toast.LENGTH_SHORT).show();
+        } else{
+            while(cursor.moveToNext()){
+                listItem.add(cursor.getString(1));
+            }
+            //adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItem);
+            //adapter2.notifyDataSetChanged();
+            //listView.setAdapter(adapter2);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
+
+        MenuItem searchItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArrayList<String> usersList = new ArrayList<String>();
+                for(String user : listItem){
+                    if(user.toLowerCase().contains(newText.toLowerCase())){
+                        usersList.add(user);
+                        //listView.setAdapter(adapter);
+                    }
+                }
+                ArrayAdapter<String> adapter3 = new ArrayAdapter<>(NotesListActivity.this, android.R.layout.simple_list_item_1,usersList);
+                adapter3.notifyDataSetChanged();
+                listView.setAdapter(adapter3);
+                return true;
+            }
+        });
         return true;
     }
 
