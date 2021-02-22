@@ -33,7 +33,8 @@ public class NotesListActivity extends AppCompatActivity {
     private SimpleCursorAdapter adapter;
 
     private ArrayList<String> listItem;
-    private ArrayAdapter<String> adapter2;
+    private SimpleCursorAdapter adapter2;
+    private DatabaseHelper dbHelper;
     
     
     final String[] from = new String[] {DatabaseHelper._ID, DatabaseHelper.SUBJECT, DatabaseHelper.DESC};
@@ -54,8 +55,8 @@ public class NotesListActivity extends AppCompatActivity {
         
         
         listItem = new ArrayList<String>();
-        viewData();
-        
+
+        dbHelper = new DatabaseHelper(this);
 
         adapter = new SimpleCursorAdapter(this,R.layout.activity_view, cursor,from,to,0);
         adapter.notifyDataSetChanged();
@@ -66,39 +67,31 @@ public class NotesListActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long view_id) {
-                TextView idTextView = view.findViewById(R.id.id);
-                TextView titleTextView = view.findViewById(R.id.title);
-                TextView descTextView = view.findViewById(R.id.desc);
-
-                String id = idTextView.getText().toString();
-                String title = titleTextView.getText().toString();
-                String desc = descTextView.getText().toString();
 
                 Intent modify_intent = new Intent(getApplicationContext(), ModifyNoteActivity.class);
 
-                modify_intent.putExtra("title",title);
-                modify_intent.putExtra("desc",desc);
-                modify_intent.putExtra("id",id);
+                if(view.findViewById(R.id.id) != null){
+                    TextView idTextView = view.findViewById(R.id.id);
+                    String id = idTextView.getText().toString();
+                    modify_intent.putExtra("id",id);
+                }
+                if(view.findViewById(R.id.title) != null){
+                    TextView titleTextView = view.findViewById(R.id.title);
+                    String title = titleTextView.getText().toString();
+                    modify_intent.putExtra("title",title);
+                }
+                if(view.findViewById(R.id.desc) != null){
+                    TextView descTextView = view.findViewById(R.id.desc);
+                    String desc = descTextView.getText().toString();
+                    modify_intent.putExtra("desc",desc);
+                }
 
                 startActivity(modify_intent);
             }
         });
-        }
-
-    private void viewData() {
-        Cursor cursor = dbManager.fetch();
-        if(cursor.getCount() == 0){
-            Toast.makeText(this,"No data to show", Toast.LENGTH_SHORT).show();
-        } else{
-            while(cursor.moveToNext()){
-                listItem.add(cursor.getString(1));
-            }
-            //adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listItem);
-            //adapter2.notifyDataSetChanged();
-            //listView.setAdapter(adapter2);
-        }
     }
 
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
@@ -114,16 +107,12 @@ public class NotesListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ArrayList<String> usersList = new ArrayList<String>();
-                for(String user : listItem){
-                    if(user.toLowerCase().contains(newText.toLowerCase())){
-                        usersList.add(user);
-                        //listView.setAdapter(adapter);
-                    }
-                }
-                ArrayAdapter<String> adapter3 = new ArrayAdapter<>(NotesListActivity.this, android.R.layout.simple_list_item_1,usersList);
-                adapter3.notifyDataSetChanged();
-                listView.setAdapter(adapter3);
+
+                Cursor cursor2 = dbHelper.searchRows(newText);
+                adapter2 = new SimpleCursorAdapter(NotesListActivity.this,R.layout.activity_view, cursor2,from,to,0);
+                adapter2.notifyDataSetChanged();
+                listView.setAdapter(adapter2);
+
                 return true;
             }
         });

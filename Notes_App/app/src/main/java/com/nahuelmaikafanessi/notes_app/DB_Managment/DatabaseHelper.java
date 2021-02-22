@@ -1,6 +1,7 @@
 package com.nahuelmaikafanessi.notes_app.DB_Managment;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -42,4 +43,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
+
+    public Cursor searchRows(String subj){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "Select * from "+ TABLE_NAME + " WHERE " + SUBJECT + " Like '%" + subj + "%'"+ " OR " + DESC + " Like '%" + subj + "%'";
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor;
+    }
+
 }
